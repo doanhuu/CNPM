@@ -1,0 +1,64 @@
+<? session_start();?>
+<? ob_start();?>
+<html>
+  <head>
+		<link rel="stylesheet" text="text/CSS" href="CSS/login_register.css"/>
+		<script language="JavaScript" src="JS/login.js"></script>
+		<script language="JavaScript" src="JS/register.js"></script>
+	</head>
+	<? include "header.php";?>
+	<div id="bodylogin">
+		<div id="login">
+			<?								
+				$mail=$_POST['email'];
+				$pass=$_POST['password'];
+				if($mail!=''&&$pass!=''){
+					include "dbconnect.php";
+					$sql_query = @mysql_query("SELECT id, email, password FROM account WHERE email='{$mail}'");
+					$member = @mysql_fetch_array( $sql_query );
+					if ( @mysql_num_rows( $sql_query ) <= 0 ){ ?>
+						<font color="red"><h3>Email khong ton tai. <a href='javascript:history.go(-1)'>Tro lai</a></h3></font>
+						<?
+						exit;
+					}
+					if ( $password != $member['password'] ) 
+					{ ?>
+					<font color="red"><h3>Nhap lai mat khau. <a href='javascript:history.go(-1)'>Quay tro lai</a></h3></font>
+					<?
+						exit;
+					
+					}
+					$_SESSION['user_id'] = $member['id'];
+					$_SESSION['user_admin'] = $member['admin'];
+					header('Location:ghep.php');				
+				}
+			?>
+			<p>Dang nhap!</p>
+			<form name="contact"  method="POST" onsubmit="return CheckForm();">
+				<table>
+					<tr>
+						<td>&nbsp </td> <td> &nbsp </td>
+					</tr>
+					<tr>
+						<td><span>Email</span></td>
+						<td><input type="text" name="email"/><td>
+						<td><p class="hide error" id="email-error"></p></td>
+						
+					</tr>
+					<tr>
+						<td><span>Password</span></td>
+						<td><input type="password" name="password"/></td>
+						<td><p class="hide error" id="password-error"></p></td>
+					</tr>
+					<tr>
+						<td>&nbsp </td> <td> &nbsp </td>
+					</tr>
+					<tr>
+						<td>&nbsp </td>
+						<td><button type="submit" name="submit" value="submit">LOGIN</button><td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</html>
